@@ -11,5 +11,6 @@ C:\Users\30413（换成你自己的）\AppData\Local\typst\packages\local\ysz_to
 
 （如果有些目录下没有文件夹，那就自行创建）
 
-确保0.1.0文件夹内是：
+确保0.1.0文件夹内是（`.sh`文件可以不需要）：
 ![alt text](image.png)
+
