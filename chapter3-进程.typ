@@ -88,3 +88,66 @@
 ]
 - *包含内容*：进程标识符、当前状态、队列指针、程序和数据地址、进程优先级、CPU现场保护区、通信信息、家族关系、资源清单等。
 - *组织方式*：线性方式、链表方式（按状态组成就绪队列、阻塞队列等）、索引方式。
+
+=== 进程的操作
+创建、撤消、阻塞、唤醒等,一般由操作系统内核*原语*实现
+
+创建:通过创建进程系统调用可以创建新进程，创 建方称为父进程，被创建方称为子进程.进程的创建需要OS执行，但多数进程都是在现有进程的要求下创建的.  不会的去问Jered Gong
+
+#import "@preview/cetz:0.4.2"
+
+#let f = cetz.canvas({
+  import cetz.draw: *
+
+  // 设置全局线宽和圆角，模拟手绘的柔和感
+  let frame-style = (stroke: 1.5pt + black, fill: white, radius: .1)
+
+  // 1. 右侧的 Bash 进程 (触发源)
+  group(name: "bash-group", {
+    rect((5, 0), (9, 3), ..frame-style, name: "bash-box")
+    content("bash-box.north", padding: .2, anchor: "south")[*bash*]
+    
+    // 模拟终端提示符和命令
+    content((5.5, 2.3), anchor: "west", size: 15pt)[`# vim `]
+    
+    // 那个 L 型的回车箭头 (Enter)
+    line((7.8, 2.1), (7.8, 1.8), (7.4, 1.8), mark: (end: "stealth", fill: black))
+    
+    // 标注：此时 Bash 进入阻塞状态
+    content("bash-box.south", padding: .3, anchor: "north")[
+      #set text(size: 9pt, fill: gray.darken(20%))
+      调用 `wait()` \
+      进程挂起 (Blocked)
+    ]
+  })
+
+  // 2. 中间的指向箭头 (控制权转移/系统调用)
+  // 使用双线或加粗箭头表示 Fork/Exec
+  line((4.8, 1.5), (3.2, 1.5), mark: (end: "stealth", size: .4), stroke: 2pt)
+  content((4, 1.8), size: 9pt)[*fork exec*]
+
+  // 3. 左侧的 Vim 进程 (子进程)
+  group(name: "vim-group", {
+    rect((0, 0), (3, 3), ..frame-style, name: "vim-box")
+    content("vim-box.north", padding: .2, anchor: "south")[*vim*]
+    
+    // 模拟文件内容线条
+    for i in range(1, 5) {
+      line((0.5, 2.5 - i * 0.4), (2.5, 2.5 - i * 0.4), stroke: gray + 1pt)
+    }
+    
+    // 模拟底部的命令状态栏
+    content((0.2, 0.4), anchor: "west", size: 10pt)[`:`]
+    
+    content("vim-box.south", padding: .3, anchor: "north")[
+      #set text(size: 9pt)
+      子进程运行中 \
+      独占终端 I/O
+    ]
+  })
+})
+#figure(
+  f,caption:[
+    例子
+  ]
+)
